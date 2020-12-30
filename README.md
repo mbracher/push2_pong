@@ -1,6 +1,6 @@
 # push2_pong
 
-[![Crate](https://img.shields.io/crates/v/push2_display.svg)](https://crates.io/crates/push2_pong)
+[![Crate](https://img.shields.io/crates/v/push2_pong.svg)](https://crates.io/crates/push2_pong)
 
 Push2Pong is the Pong game implemented in Rust for the Ableton Push2.
 
