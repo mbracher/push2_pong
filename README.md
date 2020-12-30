@@ -21,9 +21,7 @@ cd push2_display
 cargo run
 ```
 
-![Video of Pong on Push2 device](https://youtu.be/yNQW1IhUdtM)
-
-![Photo of Pong on Push2 device](https://raw.githubusercontent.com/mbracher/push2_pong/master/push2pong.jpg)
+[![Video of Pong on Push2 device](https://img.youtube.com/vi/yNQW1IhUdtM/0.jpg)](https://youtu.be/yNQW1IhUdtM)
 
 ## References
 [Ableton Push Interface](https://github.com/Ableton/push-interface)
