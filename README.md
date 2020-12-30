@@ -21,7 +21,7 @@ cd push2_display
 cargo run
 ```
 
-![Photo of hello example on Push2 device](https://raw.githubusercontent.com/mbracher/push2_display/master/doc/assets/push2hello.jpg)
+![Photo of Pong on Push2 device](https://raw.githubusercontent.com/mbracher/push2_pong/master/push2pong.jpg)
 
 ## References
 [Ableton Push Interface](https://github.com/Ableton/push-interface)
