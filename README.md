@@ -21,12 +21,16 @@ cd push2_display
 cargo run
 ```
 
+![Video of Pong on Push2 device](https://youtu.be/yNQW1IhUdtM)
+
 ![Photo of Pong on Push2 device](https://raw.githubusercontent.com/mbracher/push2_pong/master/push2pong.jpg)
 
 ## References
 [Ableton Push Interface](https://github.com/Ableton/push-interface)
 
 [Embedded graphics](https://github.com/embedded-graphics/embedded-graphics)
+
+[Ableton Push2 Embedded graphics display driver](https://github.com/mbracher/push2_display)
 
 ## License
 
