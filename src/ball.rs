@@ -1,9 +1,9 @@
 
 use embedded_graphics::{
     prelude::*,
-    primitives::{Circle},
+    primitives::{PrimitiveStyle, Circle},
     pixelcolor::{Bgr565},
-    style::{PrimitiveStyle},
+
 };
 #[derive(Clone, Copy, Debug)]
 pub struct Ball {

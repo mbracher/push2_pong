@@ -127,9 +127,9 @@ dependencies = [
 
 [[package]]
 name = "embedded-graphics"
-version = "0.7.0-alpha.2"
+version = "0.7.0-alpha.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9882fa333c8ac41fe60105878c4f800507aa7cb4815a0491541613824c098e85"
+checksum = "454f03fe5f009b0099fe5f681271d745742d9525c671f2264b27009349485531"
 dependencies = [
  "embedded-graphics-core",
  "float-cmp",
@@ -138,9 +138,9 @@ dependencies = [
 
 [[package]]
 name = "embedded-graphics-core"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c63e897bb16fe1c8dbc05960f3c879d828a563034c1bbc3ab71f5f94f9a75c2b"
+checksum = "f7276d8b7f1a6e2404fda811af9fb94bb2e2b045e4fa908b968fc56857d84e88"
 dependencies = [
  "byteorder",
 ]
@@ -306,7 +306,7 @@ dependencies = [
 
 [[package]]
 name = "push2_display"
-version = "1.0.0-alpha.1"
+version = "1.0.0-alpha.2"
 dependencies = [
  "embedded-graphics-core",
  "rusb",
@@ -315,7 +315,7 @@ dependencies = [
 
 [[package]]
 name = "push2_pong"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "embedded-graphics",

@@ -1,6 +1,6 @@
 [package]
 name = "push2_pong"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["Marc Bracher"]
 edition = "2018"
 description="Ableton Push2 Embedded-graphics display driver"
@@ -14,5 +14,5 @@ midir = "0.7.0"
 anyhow = "1.0.36"
 thiserror = "1.0.22"
 gameloop = "0.2.0"
-push2_display = { version = "1.0.0-alpha.1", path = "../push2_display" }
-embedded-graphics = "0.7.0-alpha.2"
+push2_display = { version = "1.0.0-alpha.2", path = "../push2_display" }
+embedded-graphics = "0.7.0-alpha.3"

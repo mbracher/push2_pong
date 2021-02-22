@@ -4,9 +4,11 @@ use embedded_graphics::{
     prelude::*,
     primitives::{Rectangle},
     pixelcolor::{Bgr565},
-    style::{PrimitiveStyle},
+
 
 };
+
+use embedded_graphics::primitives::PrimitiveStyle;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Player {
