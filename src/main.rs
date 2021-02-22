@@ -27,35 +27,32 @@
 //!
 //! [Ableton Push2 Embedded graphics display driver](https://github.com/mbracher/push2_display)
 
-mod score;
-mod player;
 mod ball;
+mod player;
+mod score;
 
-use crate::score::Score;
-use crate::player::Player;
 use crate::ball::Ball;
+use crate::player::Player;
+use crate::score::Score;
 
 use anyhow::Result;
 use thiserror::Error;
 
-use midir::{MidiInput, MidiOutput, Ignore, MidiInputPort, ConnectError, InitError, PortInfoError, SendError};
-// use wayang::{Wayang, WayangError};
-use push2_display::*;
-use gameloop::{GameLoop, FrameAction, GameLoopError};
-use std::sync::mpsc::{Receiver};
-
-use embedded_graphics::{
-    prelude::*,
-    geometry::Point,
-    pixelcolor::Bgr565,
+use midir::{
+    ConnectError, Ignore, InitError, MidiInput, MidiInputPort, MidiOutput, PortInfoError, SendError,
 };
-use std::convert::Infallible;
+// use wayang::{Wayang, WayangError};
+use gameloop::{FrameAction, GameLoop, GameLoopError};
+use push2_display::*;
+use std::sync::mpsc::Receiver;
 
+use embedded_graphics::{geometry::Point, pixelcolor::Bgr565, prelude::*};
+use std::convert::Infallible;
 
 fn main() {
     match run() {
         Ok(_) => (),
-        Err(err) => println!("Error: {}", err)
+        Err(err) => println!("Error: {}", err),
     }
 }
 
@@ -74,17 +71,14 @@ pub enum MyError {
     #[error(transparent)]
     GameLoopE(#[from] GameLoopError),
 
-
     #[error(transparent)]
     MidirError(#[from] ConnectError<MidiInput>),
-
 
     #[error(transparent)]
     MidirError2(#[from] InitError),
 
     // #[error(transparent)]
     // Push2Error(#[from] WayangError),
-
     #[error(transparent)]
     Push2Error(#[from] Push2DisplayError),
 
@@ -101,8 +95,7 @@ pub enum MyError {
     Infallible(#[from] Infallible),
 
     #[error(transparent)]
-    Other(#[from] anyhow::Error),  // source and Display delegate to anyhow::Error
-
+    Other(#[from] anyhow::Error), // source and Display delegate to anyhow::Error
 }
 
 enum MidiMessage {
@@ -135,69 +128,75 @@ fn run() -> Result<(), MyError> {
             match message {
                 [0xB0, 0x4F, value] => {
                     tx.send(MidiMessage::X(get_endcoder_value(value))).unwrap();
-                },
+                }
                 [0xB0, 0x4E, value] => {
                     tx.send(MidiMessage::Y(get_endcoder_value(value))).unwrap();
-                },
+                }
                 [0xB0, 0x0F, value] => {
                     tx.send(MidiMessage::X2(get_endcoder_value(value))).unwrap();
-                },
+                }
                 [0xB0, 0x47, value] => {
                     tx.send(MidiMessage::Y2(get_endcoder_value(value))).unwrap();
-                },
-                [0xFE, _] => {
-
-                },
+                }
+                [0xFE, _] => {}
                 _ => {
                     // println!("{}: {:X?} (len = {})", stamp, message, message.len());
-                },
+                }
             }
-
         },
-        tx1
+        tx1,
     )?;
 
-    let mut player1 = Player::new(display.size().width as i32 - 51, display.size().height as i32 / 2 , 5, 25 );
-    let mut player2 = Player::new(50, display.size().height as i32 / 2, 5, 25 );
-    let mut ball = Ball::new(display.size().width as i32 / 2, display.size().height as i32 / 2, 9 );
+    let mut player1 = Player::new(
+        display.size().width as i32 - 51,
+        display.size().height as i32 / 2,
+        5,
+        25,
+    );
+    let mut player2 = Player::new(50, display.size().height as i32 / 2, 5, 25);
+    let mut ball = Ball::new(
+        display.size().width as i32 / 2,
+        display.size().height as i32 / 2,
+        9,
+    );
     ball.speed_x = 3;
 
-    let mut touching : bool = false;
+    let mut touching: bool = false;
     let mut player1_old_pos = player1.position;
     let mut player2_old_pos = player2.position;
 
     let mut score = Score::new(5);
 
-    let game_loop = GameLoop::new(60,5)?;
+    let game_loop = GameLoop::new(60, 5)?;
     loop {
         handle_paddles(&rx1, &mut player1.position, &mut player2.position);
 
         for action in game_loop.actions() {
             match action {
                 FrameAction::Tick => {
-                    let player1_speed_y = player1.position.y  - player1_old_pos.y;
-                    let player2_speed_y = player2.position.y  - player2_old_pos.y;
+                    let player1_speed_y = player1.position.y - player1_old_pos.y;
+                    let player2_speed_y = player2.position.y - player2_old_pos.y;
 
                     let ball_old_pos = ball.position;
 
-                    ball.position.x = add_max(ball.position.x, ball.speed_x , display.size().width as i32);
-                    ball.position.y = add_max(ball.position.y, ball.speed_y, display.size().height as i32);
+                    ball.position.x =
+                        add_max(ball.position.x, ball.speed_x, display.size().width as i32);
+                    ball.position.y =
+                        add_max(ball.position.y, ball.speed_y, display.size().height as i32);
 
                     if hit_player(ball.position, ball_old_pos, player1) {
                         if !touching {
                             touching = true;
                             ball.speed_y += player1_speed_y;
-                             ball.speed_x *= -1;
+                            ball.speed_x *= -1;
                         }
-                    }
-                    else if hit_player(ball.position, ball_old_pos, player2) {
+                    } else if hit_player(ball.position, ball_old_pos, player2) {
                         if !touching {
                             touching = true;
                             ball.speed_y += player2_speed_y;
                             ball.speed_x *= -1;
                         }
-                    }
-                    else {
+                    } else {
                         touching = false;
                     }
 
@@ -212,8 +211,7 @@ fn run() -> Result<(), MyError> {
                         ball.speed_y = 0;
 
                         score.player(1)
-                    }
-                    else if ball.position.x <= 0  {
+                    } else if ball.position.x <= 0 {
                         ball.position.x = display.size().width as i32 / 2;
                         ball.position.y = display.size().height as i32 / 2;
                         ball.speed_x *= -1;
@@ -225,17 +223,19 @@ fn run() -> Result<(), MyError> {
                     match score.winner() {
                         1 => {
                             score.reset();
-                        },
+                        }
                         2 => {
                             score.reset();
-                        },
-                        _ => {},
+                        }
+                        _ => {}
                     }
                     player1_old_pos = player1.position;
                     player2_old_pos = player2.position;
-                },
+                }
 
-                FrameAction::Render { interpolation: _interpolation } => {
+                FrameAction::Render {
+                    interpolation: _interpolation,
+                } => {
                     display.clear(Bgr565::BLACK)?;
 
                     player1.draw(&mut display)?;
@@ -244,7 +244,7 @@ fn run() -> Result<(), MyError> {
                     score.draw(&mut display)?;
 
                     display.flush()?;
-                },
+                }
             }
         }
     }
@@ -252,23 +252,28 @@ fn run() -> Result<(), MyError> {
 
 fn line_collision(x1: f32, y1: f32, x2: f32, y2: f32, x3: f32, y3: f32, x4: f32, y4: f32) -> bool {
     //http://www.jeffreythompson.org/collision-detection/line-line.php
-    let rc = (y4-y3)*(x2-x1) - (x4-x3)*(y2-y1);
-    let u_a = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / rc;
-    let u_b = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / rc;
+    let rc = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+    let u_a = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / rc;
+    let u_b = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / rc;
 
     u_a >= 0. && u_a <= 1.0 && u_b >= 0.0 && u_b <= 1.0
 }
 
 fn hit_player(ball_pos: Point, ball_old_pos: Point, player: Player) -> bool {
     line_collision(
-        ball_old_pos.x as f32, ball_old_pos.y as f32,
-        ball_pos.x as f32, ball_pos.y as f32,
-        player.position.x as f32, player.position.y as f32 , // - player.size.height as f32 / 2.0
-        player.position.x as f32, player.position.y as f32 + player.size.height as f32 ) //  / 2.0
+        ball_old_pos.x as f32,
+        ball_old_pos.y as f32,
+        ball_pos.x as f32,
+        ball_pos.y as f32,
+        player.position.x as f32,
+        player.position.y as f32, // - player.size.height as f32 / 2.0
+        player.position.x as f32,
+        player.position.y as f32 + player.size.height as f32,
+    ) //  / 2.0
 }
 
 fn add_max(c: i32, v: i32, max: i32) -> i32 {
-    let x = c  + v;
+    let x = c + v;
     if x < 0 {
         0
     } else if x >= max {
@@ -278,24 +283,24 @@ fn add_max(c: i32, v: i32, max: i32) -> i32 {
     }
 }
 
-fn handle_paddles(rx1: &Receiver<MidiMessage>, position: &mut Point, position2: &mut Point)  {
+fn handle_paddles(rx1: &Receiver<MidiMessage>, position: &mut Point, position2: &mut Point) {
     loop {
         match rx1.try_recv() {
             Ok(MidiMessage::X(value)) => {
                 position.x = add_max(position.x, value as i32, DISPLAY_WIDTH as i32)
-            },
+            }
             Ok(MidiMessage::Y(value)) => {
                 position.y = add_max(position.y, value as i32, DISPLAY_HEIGHT as i32)
-            },
+            }
             Ok(MidiMessage::X2(value)) => {
                 position2.x = add_max(position2.x, value as i32, DISPLAY_WIDTH as i32)
-            },
+            }
             Ok(MidiMessage::Y2(value)) => {
                 position2.y = add_max(position2.y, value as i32, DISPLAY_HEIGHT as i32)
-            },
+            }
             _ => {
                 break;
-            },
+            }
         }
     }
 }
@@ -312,7 +317,10 @@ fn get_endcoder_value(value: &u8) -> i8 {
 fn get_midi_in_port(midi_in: &MidiInput, port_name: &str) -> Result<MidiInputPort, MyError> {
     // Get an input port (read from console if multiple are available)
     let in_ports = midi_in.ports();
-    let ip = in_ports.iter().find(|&x| midi_in.port_name(x).unwrap_or_default() == port_name.to_string()).ok_or(MyError::NoMidiInFound)?;
+    let ip = in_ports
+        .iter()
+        .find(|&x| midi_in.port_name(x).unwrap_or_default() == port_name.to_string())
+        .ok_or(MyError::NoMidiInFound)?;
     Ok(ip.clone())
 }
 
@@ -321,7 +329,6 @@ fn get_midi_in_port(midi_in: &MidiInput, port_name: &str) -> Result<MidiInputPor
 //     let p = out_ports.iter().find(|&x| midi_out.port_name(x).unwrap_or_default() == port_name.to_string()).ok_or(MyError::NoMidiOutFound)?;
 //     Ok(p.clone())
 // }
-
 
 #[cfg(test)]
 mod tests {
@@ -361,5 +368,4 @@ mod tests {
 
         assert_eq!(hit_player(ball.position, old_pos, player), true);
     }
-
 }

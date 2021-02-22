@@ -1,12 +1,4 @@
-use embedded_graphics::{
-
-
-    prelude::*,
-    primitives::{Rectangle},
-    pixelcolor::{Bgr565},
-
-
-};
+use embedded_graphics::{pixelcolor::Bgr565, prelude::*, primitives::Rectangle};
 
 use embedded_graphics::primitives::PrimitiveStyle;
 
@@ -28,9 +20,12 @@ impl Player {
 impl Drawable for Player {
     type Color = Bgr565;
 
-    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error> where
-        D: DrawTarget<Color=Bgr565> {
-
-        Rectangle::new(self.position,  self.size).into_styled(PrimitiveStyle::with_fill(Bgr565::WHITE)).draw(display)
+    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error>
+    where
+        D: DrawTarget<Color = Bgr565>,
+    {
+        Rectangle::new(self.position, self.size)
+            .into_styled(PrimitiveStyle::with_fill(Bgr565::WHITE))
+            .draw(display)
     }
 }

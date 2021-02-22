@@ -1,13 +1,8 @@
 use embedded_graphics::{
-
-
     mono_font::{ascii::Font6x10, MonoTextStyle},
+    pixelcolor::Bgr565,
     prelude::*,
-
-    pixelcolor::{Bgr565},
     text::Text,
-
-
 };
 use push2_display::DISPLAY_WIDTH;
 
@@ -22,18 +17,16 @@ impl Score {
         Score {
             score_1: 0,
             score_2: 0,
-            best_of
+            best_of,
         }
     }
 
     pub fn winner(&self) -> u32 {
         if self.score_1 >= self.best_of {
             1
-        }
-        else if self.score_2 >= self.best_of {
+        } else if self.score_2 >= self.best_of {
             2
-        }
-        else {
+        } else {
             0
         }
     }
@@ -55,10 +48,11 @@ impl Score {
 impl Drawable for Score {
     type Color = Bgr565;
 
-    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error> where
-        D: DrawTarget<Color=Bgr565> {
-
-        let text= &format!("{:02} - {:02}", self.score_1, self.score_2);
+    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error>
+    where
+        D: DrawTarget<Color = Bgr565>,
+    {
+        let text = &format!("{:02} - {:02}", self.score_1, self.score_2);
         Text::new(text, Point::new(DISPLAY_WIDTH as i32 / 2, 9))
             .into_styled(MonoTextStyle::new(Font6x10, Bgr565::WHITE))
             .draw(display)

@@ -1,9 +1,7 @@
-
 use embedded_graphics::{
+    pixelcolor::Bgr565,
     prelude::*,
-    primitives::{PrimitiveStyle, Circle},
-    pixelcolor::{Bgr565},
-
+    primitives::{Circle, PrimitiveStyle},
 };
 #[derive(Clone, Copy, Debug)]
 pub struct Ball {
@@ -27,9 +25,12 @@ impl Ball {
 impl Drawable for Ball {
     type Color = Bgr565;
 
-    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error> where
-        D: DrawTarget<Color=Bgr565> {
-
-        Circle::new(self.position,  self.diameter).into_styled(PrimitiveStyle::with_stroke(Bgr565::WHITE, 1)).draw(display)
+    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error>
+    where
+        D: DrawTarget<Color = Bgr565>,
+    {
+        Circle::new(self.position, self.diameter)
+            .into_styled(PrimitiveStyle::with_stroke(Bgr565::WHITE, 1))
+            .draw(display)
     }
 }
