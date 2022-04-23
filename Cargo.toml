@@ -1,6 +1,6 @@
 [package]
 name = "push2_pong"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Marc Bracher"]
 edition = "2018"
 description="Ableton Push2 Embedded-graphics display driver"

@@ -279,7 +279,7 @@ dependencies = [
 
 [[package]]
 name = "push2_pong"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "anyhow",
  "embedded-graphics",
