@@ -14,5 +14,5 @@ midir = "0.7.0"
 anyhow = "1.0.36"
 thiserror = "1.0.22"
 gameloop = "0.2.0"
-push2_display = { version = "1.0.0-alpha.2", path = "../push2_display" }
-embedded-graphics = "0.7.0-alpha.3"
+push2_display = { version = "0.2.0", path = "../push2_display" }
+embedded-graphics = "0.7.1"

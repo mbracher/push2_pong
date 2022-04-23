@@ -1,5 +1,5 @@
 use embedded_graphics::{
-    mono_font::{ascii::Font6x10, MonoTextStyle},
+    mono_font::{ascii::FONT_6X10, MonoTextStyle},
     pixelcolor::Bgr565,
     prelude::*,
     text::Text,
@@ -47,14 +47,17 @@ impl Score {
 
 impl Drawable for Score {
     type Color = Bgr565;
+    type Output = ();
 
-    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error>
+    fn draw<D>(&self, display: &mut D) -> Result<Self::Output, D::Error>
     where
         D: DrawTarget<Color = Bgr565>,
     {
+        let text_style = MonoTextStyle::new(&FONT_6X10, Bgr565::WHITE);
         let text = &format!("{:02} - {:02}", self.score_1, self.score_2);
-        Text::new(text, Point::new(DISPLAY_WIDTH as i32 / 2, 9))
-            .into_styled(MonoTextStyle::new(Font6x10, Bgr565::WHITE))
-            .draw(display)
+        Text::new(text, Point::new(DISPLAY_WIDTH as i32 / 2, 9), text_style)
+            .draw(display)?;
+
+        Ok(())
     }
 }

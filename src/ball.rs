@@ -24,8 +24,9 @@ impl Ball {
 
 impl Drawable for Ball {
     type Color = Bgr565;
+    type Output = ();
 
-    fn draw<D>(&self, display: &mut D) -> Result<(), <D as DrawTarget>::Error>
+    fn draw<D>(&self, display: &mut D) -> Result<Self::Output, D::Error>
     where
         D: DrawTarget<Color = Bgr565>,
     {
